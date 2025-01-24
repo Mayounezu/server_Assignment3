@@ -6,7 +6,8 @@ public class ConnectedFrame extends Frame {
 
     String stompVersion;
 
-    public ConnectedFrame(String _stompVersion) {
+    public ConnectedFrame(int senderId, String _stompVersion) {
+        super(senderId);
         stompVersion = _stompVersion;
     }
 

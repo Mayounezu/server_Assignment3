@@ -1,30 +1,26 @@
 package bgu.spl.net.impl.stomp;
 
 import bgu.spl.net.impl.stomp.Frames.ConnectFrame;
+import bgu.spl.net.srv.Connections;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Frame {
 
+    private final int senderId;
+    protected ConcurrentHashMap<String, String> headers;
+    protected int connectionId;
+    protected Connections<String> connections;
+
+
+    protected Frame(ConcurrentHashMap headers, int connectionId, Connections<String> connections) {
+        this.senderId = connectionId;
+        this.headers = headers;
+        this.connections = connections;
+    }
 
     public abstract String processFrame();
-
-    public static Frame processMessage(String msg) {
-        String[] args = msg.split("\n");
-
-        HashMap<String, String> headers = new HashMap<>();
-
-        for (int i = 1; i < args.length; i++) {
-            String[] header = args[i].split(":");
-            headers.put(header[0], header[1]);
-        }
-        //handle exceptions (should return errorFrame)
-        if (args[0].equals("CONNECT")) {
-            return new ConnectFrame(headers);
-        }
-
-    return null; //should return error exception
-    }
 
     public abstract String toString();
 

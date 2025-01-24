@@ -1,6 +1,7 @@
 package bgu.spl.net.impl.stomp.Frames;
 
 import bgu.spl.net.impl.stomp.Frame;
+import bgu.spl.net.impl.stomp.StompServer;
 
 import java.util.HashMap;
 
@@ -13,7 +14,9 @@ public class ConnectFrame extends Frame {
     private String login;
     private String passcode;
 
-    public ConnectFrame(HashMap headerMap){
+
+    public ConnectFrame(int connectionId, HashMap headerMap){
+        super(connectionId);
         this.acceptVersion = headerMap.get("accept-version").toString();
         this.host = headerMap.get("host").toString();
         this.login = headerMap.get("login").toString();
@@ -23,7 +26,11 @@ public class ConnectFrame extends Frame {
 
     @Override
     public String processFrame() {
-        return new ConnectedFrame(acceptVersion).toString();
+        if(StompServer.isUserExist(login, passcode))
+            return new ConnectedFrame(connectionId, acceptVersion).toString();
+        else
+            return new ErrorFrame("User not found").toString(); //should be added.
+        return new ConnectedFrame(connectionId, acceptVersion).toString();
     }
 
     @Override

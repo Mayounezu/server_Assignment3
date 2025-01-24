@@ -15,6 +15,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private BufferedInputStream in;
     private BufferedOutputStream out;
     private volatile boolean connected = true;
+    Client<T> client;
 
     public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, MessagingProtocol<T> protocol) {
         this.sock = sock;
@@ -56,5 +57,15 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     @Override
     public void send(T msg) {
         //IMPLEMENT IF NEEDED
+    }
+
+    @Override
+    public Client<T> getClient() {
+        return this.client;
+    }
+
+    @Override
+    public void intalizeClient(Client<T> client) {
+        this.client = client;
     }
 }

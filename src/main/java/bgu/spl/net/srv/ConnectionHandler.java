@@ -19,4 +19,9 @@ public interface ConnectionHandler<T> extends Closeable {
 
     void send(T msg);
 
+    Client<T> getClient();
+
+    void intalizeClient(Client<T> client);
+
+
 }
