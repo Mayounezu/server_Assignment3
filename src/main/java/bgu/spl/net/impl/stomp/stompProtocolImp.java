@@ -20,7 +20,7 @@ public class stompProtocolImp implements StompMessagingProtocol<String> {
     @Override
     public void process(String msg) {
         Frame frame = FrameParser.ParseMessage(msg,connections, connectionId); //return the frame that the message describes
-        connections.send(connectionId, frame.processFrame());  //process the frame and return the response
+        frame.processFrame();  //process the frame and return the response
     }
 
     @Override

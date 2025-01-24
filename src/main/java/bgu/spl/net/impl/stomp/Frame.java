@@ -20,7 +20,7 @@ public abstract class Frame {
         this.connections = connections;
     }
 
-    public abstract String processFrame();
+    public abstract void processFrame();
 
     public abstract String toString();
 

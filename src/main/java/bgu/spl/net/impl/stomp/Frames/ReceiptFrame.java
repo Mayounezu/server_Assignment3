@@ -1,17 +1,20 @@
 package bgu.spl.net.impl.stomp.Frames;
 
 import bgu.spl.net.impl.stomp.Frame;
+import bgu.spl.net.srv.Connections;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ReceiptFrame extends Frame {
 
 
-    protected ReceiptFrame(int senderId) {
-        super(senderId);
+    protected ReceiptFrame(ConcurrentHashMap<String, String> headers, int connectionId, Connections<String> connection) {
+        super(headers, connectionId, connection);
     }
 
     @Override
-    public String processFrame() {
-        return "";
+    public void processFrame() {
+
     }
 
     @Override

@@ -58,7 +58,7 @@ public class connectionsImp<T> implements Connections<T> {
     @Override
     public boolean isUserInfoValid(String username, String password) {
         return !Clients.containsKey(username)||
-                Clients.get(username).getPassword().equals(password));
+                Clients.get(username).getPassword().equals(password);
     }
 
     @Override
