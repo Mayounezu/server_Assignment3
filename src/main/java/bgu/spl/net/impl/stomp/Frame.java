@@ -12,6 +12,8 @@ public abstract class Frame {
     protected ConcurrentHashMap<String, String> headers;
     protected int connectionId;
     protected Connections<String> connections;
+    protected String recipt;
+    protected String commandName;
 
 
     protected Frame(ConcurrentHashMap headers, int connectionId, Connections<String> connections) {

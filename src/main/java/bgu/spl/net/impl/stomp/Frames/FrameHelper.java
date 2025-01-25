@@ -1,7 +1,8 @@
 package bgu.spl.net.impl.stomp.Frames;
 
-import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FrameHelper {
 
@@ -12,5 +13,17 @@ public class FrameHelper {
         ConnectedFrame connectedFrame = new ConnectedFrame(connectionId, stompVer);
         connections.send(connectionId, connectedFrame.toString());
 
+    }
+
+    public void sendError(int connectionId, Connections<String> connections, ConcurrentHashMap<String, String> headers) {
+        ErrorFrame errorFrame = new ErrorFrame(headers, connectionId, connections);
+        connections.send(connectionId, errorFrame.toString());
+    }
+
+    public static void sendReceipt(int connectionId, Connections<String> connections, String recipt) {
+        ConcurrentHashMap<String, String> headers = new ConcurrentHashMap<>();
+        headers.put("receipt-id", recipt);
+        ReceiptFrame receiptFrame = new ReceiptFrame(headers, connectionId, connections);
+        connections.send(connectionId, receiptFrame.toString());
     }
 }

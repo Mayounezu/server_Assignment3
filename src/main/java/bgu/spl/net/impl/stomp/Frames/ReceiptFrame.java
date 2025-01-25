@@ -7,10 +7,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ReceiptFrame extends Frame {
 
+    String recipt;
 
     protected ReceiptFrame(ConcurrentHashMap<String, String> headers, int connectionId, Connections<String> connection) {
         super(headers, connectionId, connection);
+        recipt = headers.get("receipt-id");
     }
+
+
 
     @Override
     public void processFrame() {
@@ -19,6 +23,8 @@ public class ReceiptFrame extends Frame {
 
     @Override
     public String toString() {
-        return "";
+        return "RECEIPT\n" +
+                "receipt-id:" + recipt + "\n" +
+                "\u0000";
     }
 }

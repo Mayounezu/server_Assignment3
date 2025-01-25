@@ -1,6 +1,5 @@
 package bgu.spl.net.srv;
 
-import java.nio.channels.Channel;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -114,5 +113,9 @@ public class connectionsImp<T> implements Connections<T> {
             client.setConnectionHandler(null);
             client.setConnectionId(-1);
         }
+    }
+
+    public Client<T> getClient(int connectionID){
+        return connectionHandlers.get(connectionID).getClient();
     }
 }

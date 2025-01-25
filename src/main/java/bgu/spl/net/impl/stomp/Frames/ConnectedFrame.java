@@ -13,6 +13,7 @@ public class ConnectedFrame extends Frame {
     public ConnectedFrame(ConcurrentHashMap<String, String> headers, int connectionId, Connections connection) {
         super(headers, connectionId, connection);
         stompVersion = headers.get("accept-version");
+        this.commandName = "CONNECTED";
     }
 
     public ConnectedFrame(int connectionId, String stompVersion) {
@@ -27,7 +28,7 @@ public class ConnectedFrame extends Frame {
 
     @Override
     public String toString() {
-        return "CONNECTED\n" +
+        return commandName + "\n" +
                 "version:" + stompVersion + "\n" +
                 "\n" + '\u0000';
     }

@@ -24,6 +24,7 @@ public class ConnectFrame extends Frame {
         this.host = this.headers.get("host");
         this.login = this.headers.get("login");
         this.passcode = this.headers.get("passcode");
+        this.recipt = this.headers.get("receipt-id");
     }
 
 
@@ -36,13 +37,21 @@ public class ConnectFrame extends Frame {
             checkLogin();
         } catch (IOException e){
             canLogin = false;
-            //create an error frame
+            ConcurrentHashMap<String, String> errorHeaders = new ConcurrentHashMap<>();
+
+            errorHeaders.put("message", e.getMessage());
+            errorHeaders.put("Frame", "CONNECT");
+            if(recipt != null)
+                errorHeaders.put("receipt-id", recipt);
+
         }
 
         if(canLogin){
             connections.login(connectionId, login, passcode);
             FrameHelper.sendConnected(connectionId, connections, acceptVersion);
-            //need to handle recipt
+            if(recipt != null){
+                FrameHelper.sendReceipt(connectionId, connections, recipt);
+            }
         }
     }
 
