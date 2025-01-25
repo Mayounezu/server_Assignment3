@@ -11,12 +11,14 @@ public class SubscribeFrame extends Frame {
 
     private String destnation;
     private int id;
+    private String recipt;
 
 
     public SubscribeFrame(ConcurrentHashMap<String, String> headers, int connectionId, Connections connection){
         super(headers, connectionId, connection);
         this.destnation = headers.get("destination").toString();
         this.id = Integer.parseInt(headers.get("id").toString());
+        this.recipt = headers.get("receipt").toString();
     }
 
     @Override
@@ -26,14 +28,22 @@ public class SubscribeFrame extends Frame {
             checkDest();
             checkId();
         }catch (IOException e){
+            ConcurrentHashMap<String, String> errorHeaders = new ConcurrentHashMap<>();
             canSubscribe = false;
-            e.printStackTrace();
+
+            errorHeaders.put("message", e.getMessage());
+            errorHeaders.put("Frame", "SUBSCRIBE");
+
+            if(recipt != null)
+                errorHeaders.put("receipt-id", recipt);
+
+            FrameHelper.sendError(connectionId, connections, errorHeaders);
         }
 
         if(canSubscribe){
-            connections.getClient(connectionId).getChannels().put(id, destnation);
+            connections.getClient(connectionId).getChannels().putIfAbsent(id, destnation);
             connections.subscribe(connectionId, id, destnation);
-            if(headers.containsKey("receipt-id"))
+            if(recipt != null)
                 FrameHelper.sendReceipt(connectionId, connections, recipt);
         }
     }

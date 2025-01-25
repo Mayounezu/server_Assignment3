@@ -44,6 +44,8 @@ public class ConnectFrame extends Frame {
             if(recipt != null)
                 errorHeaders.put("receipt-id", recipt);
 
+            FrameHelper.sendError(connectionId, connections, errorHeaders);
+
         }
 
         if(canLogin){

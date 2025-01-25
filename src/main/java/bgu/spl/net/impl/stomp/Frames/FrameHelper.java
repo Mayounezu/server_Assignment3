@@ -15,7 +15,7 @@ public class FrameHelper {
 
     }
 
-    public void sendError(int connectionId, Connections<String> connections, ConcurrentHashMap<String, String> headers) {
+    public static void sendError(int connectionId, Connections<String> connections, ConcurrentHashMap<String, String> headers) {
         ErrorFrame errorFrame = new ErrorFrame(headers, connectionId, connections);
         connections.send(connectionId, errorFrame.toString());
     }
@@ -26,4 +26,5 @@ public class FrameHelper {
         ReceiptFrame receiptFrame = new ReceiptFrame(headers, connectionId, connections);
         connections.send(connectionId, receiptFrame.toString());
     }
+
 }

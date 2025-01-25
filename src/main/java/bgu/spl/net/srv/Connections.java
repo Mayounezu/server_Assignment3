@@ -1,6 +1,8 @@
 package bgu.spl.net.srv;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface Connections<T> {
 
@@ -25,4 +27,6 @@ public interface Connections<T> {
     void disconnect(int connectionId);
 
     Client<T> getClient(int connectionId);
+
+    public ConcurrentHashMap<String, LinkedList<Integer>> getChannelsToConnectionId();
 }

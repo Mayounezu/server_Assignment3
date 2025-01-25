@@ -1,11 +1,10 @@
 package bgu.spl.net.impl.stomp;
 
-import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.impl.stomp.Frames.FrameParser;
 import bgu.spl.net.srv.Connections;
 
-public class stompProtocolImp implements StompMessagingProtocol<String> {
+public class StompProtocolImp implements StompMessagingProtocol<String> {
     private Connections<String> connections;
     private int connectionId;
     boolean shouldTerminate = false;

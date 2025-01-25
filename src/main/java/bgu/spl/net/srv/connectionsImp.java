@@ -1,5 +1,7 @@
 package bgu.spl.net.srv;
 
+import bgu.spl.net.impl.stomp.Frames.MessageFrame;
+
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,7 +10,8 @@ public class connectionsImp<T> implements Connections<T> {
 
 
     ConcurrentHashMap<Integer, ConnectionHandler<T>> connectionHandlers = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, LinkedList<Integer>> channels = new ConcurrentHashMap();//from name to subscriptionsID
+    private final ConcurrentHashMap<String, LinkedList<Integer>> channels = new ConcurrentHashMap<>();//from name to subscriptionsID
+    private final ConcurrentHashMap<String, LinkedList<Integer>> channelsToConnectionId = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, Client<T>> Clients = new ConcurrentHashMap<>();
     boolean isConnected = false;
 
@@ -24,10 +27,16 @@ public class connectionsImp<T> implements Connections<T> {
 
         if(channels.containsKey(channel)){
             channels.get(channel).add(subscribeID);
+            channelsToConnectionId.get(channel).add(connectionId);
         }
         else{
             LinkedList<Integer> newChannel = new LinkedList<>();
             newChannel.add(subscribeID);
+
+            LinkedList<Integer> newChannelToConnectionId = new LinkedList<>();
+            newChannelToConnectionId.add(connectionId);
+
+            channelsToConnectionId.put(channel, newChannelToConnectionId);
             channels.put(channel, newChannel);
         }
 
@@ -38,13 +47,16 @@ public class connectionsImp<T> implements Connections<T> {
     public boolean unsubscribe(int connectionId, int subscribeID, String channel) {
         ConcurrentHashMap<Integer, String> userChannels = connectionHandlers.get(connectionId).getClient().getChannels();
         userChannels.remove(subscribeID);
+
+        channels.get(channel).remove(subscribeID);
+        channelsToConnectionId.get(channel).remove(connectionId);
         return true;
     }
 
     @Override
     public boolean isSubscribe(int connectionId, String channel) {
         if(isChannel(channel)){
-            return channels.get(channel).contains(connectionId);
+            return channelsToConnectionId.get(channel).contains(connectionId);
         }
         return false;
     }
@@ -93,11 +105,13 @@ public class connectionsImp<T> implements Connections<T> {
 
     @Override
     public void send(String channel, T msg) {
-        LinkedList<Integer> subscribers = channels.get(channel);
-        for (int i = 0; i < subscribers.size(); i++) {
-            connectionHandlers.get(subscribers.get(i)).send(msg);
+        LinkedList<Integer> clientsSubscribed = channelsToConnectionId.get(channel);
+        for (int i = 0; i < clientsSubscribed.size(); i++) {
+            connectionHandlers.get(clientsSubscribed.get(i)).send(msg);
         }
     }
+
+
 
 
     @Override
@@ -117,5 +131,9 @@ public class connectionsImp<T> implements Connections<T> {
 
     public Client<T> getClient(int connectionID){
         return connectionHandlers.get(connectionID).getClient();
+    }
+
+    public ConcurrentHashMap<String, LinkedList<Integer>> getChannelsToConnectionId() {
+        return channelsToConnectionId;
     }
 }
